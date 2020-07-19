@@ -1,0 +1,38 @@
+{
+   "version": "0.0.1",
+   "manifest_version": 2,
+   "name": "DeCutR",
+   "description": "Card a selected text of evidence automatically.",
+   "icons": {
+        "16": "icons/icon-16.png",
+        "32": "icons/icon-32.png",
+        "48": "icons/icon-48.png",
+        "128": "icons/icon-128.png"
+   },
+   
+	"background": {
+        "scripts" : ["js/jquery-3.5.1.min.js", "js/background.js"],
+        "persistent": true
+    },
+
+   "browser_action": {
+        "default_icon": "icons/icon-32.png",
+        "default_title": "Card Evidence"
+   },
+
+   "options_ui": {
+        "page": "html/options.html",
+        "open_in_tab": true
+    },
+
+   "permissions": [ "http://*/*", "https://*/*", "tabs", "contextMenus",  "storage"],
+     
+    "content_scripts": [{
+        "matches": ["http://*/*", "https://*/*"],
+        "js": ["js/jquery-3.5.1.min.js", "js/content_script.js"]
+    }]   
+}
+
+
+
+ 
