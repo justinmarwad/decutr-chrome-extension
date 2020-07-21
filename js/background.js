@@ -56,16 +56,13 @@ function cardEvidence(text, url) {
     if(text==''){
         text="No text selected";
         alert(text);
-        //You may choose to pop up a text box allowing the user to enter in a message instead.
     }
 
     paragraph_text = getParagraphText(text);
-    // alert(paragraph_text)
 
-    //From here, you can POST the variables to any web service you choose.    
     
+
     $.get("https://www.jsmtech.org/decutr/card/", {text: text, paragraph_text: paragraph_text, url: url, initials: userName=localStorage.getItem('initials')}, function(data){
-        // alert(data);
         // copyTextToClipboard(data);
         copyFormattedTextToClipboard(data); 
     });
