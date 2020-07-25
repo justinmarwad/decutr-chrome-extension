@@ -25,12 +25,7 @@
         "open_in_tab": true
     },
 
-   "permissions": [ "http://*/*", "https://*/*", "tabs", "contextMenus",  "storage"],
-     
-    "content_scripts": [{
-        "matches": ["http://*/*", "https://*/*"],
-        "js": ["js/jquery-3.5.1.min.js", "js/content_script.js"]
-    }]   
+   "permissions": ["activeTab", "contextMenus", "storage", "https://www.decutr.com/"]
 }
 
 

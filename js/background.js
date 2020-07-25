@@ -2,18 +2,12 @@
 
 chrome.browserAction.onClicked.addListener(function(tab) {
     chrome.tabs.sendRequest(tab.id, {method: "getSelection"}, function(response){
-    
-    //   var url=response.url;
-    //   var subject=response.subject;
-    //   var text= response.body;
 
       if (chrome.runtime.openOptionsPage) {
         chrome.runtime.openOptionsPage();
       } else {
         window.open(chrome.runtime.getURL('options.html'));
       }
-
-    //   cardEvidence(text, url);
       
     });
 });
@@ -24,27 +18,21 @@ chrome.runtime.onInstalled.addListener(function() {
   var title = "Card Evidence";
   var id = chrome.contextMenus.create({"title": title, "contexts":[context], "id": "context" + context}); 
 });
-
+ 
 // add click event
 chrome.contextMenus.onClicked.addListener(onClickHandler);
 
 // The onClicked callback function.
 function onClickHandler(info, tab) {
-    chrome.tabs.sendMessage(tab.id, "getClickedEl", function(clickedEl) {
-        // alert(clickedEl);
-        // alert(clickedEl.value);
-
-        // elt.value = clickedEl.value;
-    });
     
-        if (info.pageUrl) {
-            url = info.pageUrl;
-        } else {
-            // alert("Not a webpage, please pick a webpage.");
-            url="";
-        }
+    if (info.pageUrl) {
+        url = info.pageUrl;
+    } else {
+        alert("Not a webpage, please pick a webpage.");
+        url="";
+    }
 
-        cardEvidence(info.selectionText, url);
+    cardEvidence(info.selectionText, url);
 };
 
 
@@ -62,7 +50,7 @@ function cardEvidence(text, url) {
 
     
 
-    $.get("https://www.jsmtech.org/decutr/card/", {text: text, paragraph_text: paragraph_text, url: url, initials: userName=localStorage.getItem('initials')}, function(data){
+    $.get("https://www.decutr.com/card/", {text: text, paragraph_text: paragraph_text, url: url, initials: userName=localStorage.getItem('initials')}, function(data){
         // copyTextToClipboard(data);
         copyFormattedTextToClipboard(data); 
     });
@@ -119,7 +107,7 @@ function copyFormattedTextToClipboard (html) {
       .filter(function (sheet) {
         return !sheet.disabled
     })
-  
+   
     // Mount the container to the DOM to make `contentWindow` available
     // [3]
     document.body.appendChild(container)

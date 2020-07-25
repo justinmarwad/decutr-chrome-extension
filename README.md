@@ -2,6 +2,10 @@
 
 DeCutr is a simple chrome extention that takes the effort out of researcing. Just select your paragraph of text on an article, right click, and then hit the "Card Evidence" button to have a full citation and the evidence copied to your clipboard!
 
+## Disclaimer 
+
+DeCutr is simply a tool used for *YOUR* own research. This means that DeCutr is *NOT* responisble for the validity of cards created with the software. As always, you will need to check to make sure that your citation and evidence is aligned with the original intent, words, and information from the article. DeCutr is not responsible for issues that arrise with tournament compliance teams and/or other possible rule violation teams. 
+
 ## Installation
 
 You can install this extension two ways. The first way is the normal consumer method by going to the Chrome Web store and installing this extension from there. 
