@@ -25,7 +25,7 @@
         "open_in_tab": true
     },
 
-   "permissions": ["activeTab", "contextMenus", "storage", "https://www.decutr.com/"]
+   "permissions": ["activeTab", "contextMenus", "storage", "https://www.decutr.com/*"]
 }
 
 
