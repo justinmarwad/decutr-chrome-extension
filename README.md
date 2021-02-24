@@ -14,7 +14,7 @@ The second way is by either downloading this extension from the releases page or
 
 ## Usage
 
-Note to self: insert GIF here.
+![](https://www.decutr.com/static/img/Decutr-preview.gif)
 
 Simply select your text and then right click and hit "Card Evidence." Your formatted evidence and citation will be in your clipboard within 3 to 5 seconds, which you can then paste anywhere you'd like.
 
