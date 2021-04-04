@@ -4,64 +4,163 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>Simple Greeting Dashboard</title>
+  <title>Decutr Settings</title>
+
   <link rel="stylesheet" type="text/css" media="screen" href="../css/options.css" />
   <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css"/>
 </head>
+
+
 <body>
 
+    <div class="container light-style flex-grow-1 container-p-y">
+
+        <h4 class="font-weight-bold py-3 mb-4">Decutr Settings</h4>
     
-    <!-- <button id="settings-button">Settings</button>
-    <div class="settings" id="settings">
-        <form class="name-form" id="name-form" action="#">
-            <input class="name-input" type="text"
-                id="name-input" placeholder="Type your initials here...">
-            <button type="submit" class="name-button">Add</button>
-        </form>
-    </div> -->w
-    <h2 class="greeting display-3 text-center">Enter DeCutr Settings!</h2>
+        <div class="card overflow-hidden">
+          <div class="row no-gutters row-bordered row-border-light">
+            <div class="col-md-3 pt-0">
+              <div class="list-group list-group-flush account-settings-links">
+                <a class="list-group-item list-group-item-action active" data-toggle="list" href="#setting-general">General</a>
+                <a class="list-group-item list-group-item-action" data-toggle="list" href="#setting-font">Font Settings</a>
+              </div>
+            </div>
+            <div class="col-md-9">
+              <div class="tab-content">
+                <div class="tab-pane fade active show" id="setting-general">
+    
 
-    <br><br>
+                    <form action="#" id="citation-form">
 
-    <h5 class="text-justify text-center">Please enter your initials. They will be automatically added to each card.</h5> 
-    <section id="cover">
-        <div id="cover-caption">
-            <div id="container" class="container">
-                <div class="row">
-                    <div class="col-sm-10 offset-sm-1 text-center">
-                        <div class="info-form" id="settings">
-                            <form action="#" id="name-form" class="form-inline justify-content-center">
-                                
-                                <div class="form-group">
-                                    <label class="sr-only">Name</label>
-                                    <input type="text" id="name-input" class="form-control" placeholder="Initials">
-                                </div>
-                                <!-- <div class="form-group">
-                                    <label class="sr-only">Email</label>
-                                    <input type="text" class="form-control" placeholder="jane.doe@example.com">
-                                </div> -->
-                                <button type="submit" class="btn btn-primary">Save!</button>            
-                                <!-- <button type="submit" class="name-button">Add</button> -->
+                        <h5 class="text-justify text-center">General Settings</h5> 
 
-                            </form>
+                    
+                        <div class="card-body">
+
+                            <div class="form-group">
+                                <label class="form-label">Pre-Set Format</label>
+
+                                <select class="custom-select" id="preset">
+                                    <option value="Decutr Original" selected>Decutr Original</option>
+                                </select>
+                            </div>     
+
+                            <div class="form-group">
+                                <label class="form-label">Card Initials</label>
+                                <input type="text" id="initials" class="form-control mb-1" placeholder="Initials will be added to the end of each card.">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Custom Citation </label> <i>[Will be enabled in a future server update]</i>
+                                <textarea class="form-control" id="citation" rows="3"></textarea>
+                            </div>                         
+  
                         </div>
-                        <br>
+
+                    </form>
+
+                </div>
+
+                <div class="tab-pane fade" id="setting-font">
+                    <div class="card-body pb-2">
+
+                        <i>[This entire section will be enabled in a future server update]</i>
     
-                        <!-- <a href="#nav-main" class="btn btn-secondary-outline btn-sm" role="button">↓</a> -->
+                        <form action="#" id="font-form">
+
+                            <div class="form-group">
+                                <label class="form-label">Font Type</label>
+
+                                <select class="custom-select" id="fonttype">
+                                    <option value="Times New Roman">Times New Roman</option>
+                                    <option value="Georgia">Georgia</option>
+                                </select>
+                            </div>     
+
+                            <div class="form-group">
+                                <label class="form-label">Citation Font Size</label>
+                                <input type="text" id="citation-size" class="form-control mb-1" placeholder="Set size of citaiton.">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Evidence Font Size</label>
+                                <input type="text" id="evidence-size" class="form-control mb-1" placeholder="Set size of evidence.">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Secondary Font Size</label>
+                                <input type="text" id="secondary-size" class="form-control mb-1" placeholder="Set size of non-important parts of the citation and evidence.">
+                            </div>
+
+                            <br>
+
+                            <h6 class="mb-4">Italicize/Underline</h6>
+        
+                            <div class="form-group">
+                                <label class="switcher">
+                                    <input type="checkbox" class="switcher-input" id="italics" checked="">
+                                    <span class="switcher-indicator"><span class="switcher-yes"></span><span class="switcher-no"></span></span>
+                                    <span class="switcher-label">Italicize Citation</span>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="switcher">
+                                    <input type="checkbox" class="switcher-input" id="publisher" checked="">
+                                    <span class="switcher-indicator"><span class="switcher-yes"></span><span class="switcher-no"></span></span>
+                                    <span class="switcher-label">Underline Publisher</span>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="switcher">
+                                    <input type="checkbox" class="switcher-input"  id="author">
+                                    <span class="switcher-indicator"><span class="switcher-yes"></span><span class="switcher-no"></span></span>
+                                    <span class="switcher-label">Underline Author</span>
+                                </label>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="switcher">
+                                    <input type="checkbox" class="switcher-input" id="date" checked="">
+                                    <span class="switcher-indicator"><span class="switcher-yes"></span><span class="switcher-no"></span></span>
+                                    <span class="switcher-label">Underline Date</span>
+                                </label>
+                            </div>
+                        
+                        </form>
+
+  
+      
                     </div>
                 </div>
+            
+            
             </div>
+            </div>
+          </div>
         </div>
-    </section>
+    
+        <div class="text-right mt-3">
+          <label id="status"></label>
+          <button id="reset" type="button" class="btn btn-default">Reset</button>
+        </div>
+    
+      </div>
 
-    <div class="greeting-container">
-        <h5 class="" id="greeting"></h5>
-    </div>
 
 
-    <div class="javascript">
-       <script src="../js/options.js"></script>
 
-    </div>
+
+      <div class="javascript">
+          <script src="../js/libraries/jquery-3.5.1.min.js"></script>
+          <script src="../js/libraries/bootstrap.min.js"></script>
+          <script src="../js/options.js"></script>
+     </div>
+ 
+
+
+
+
+
+
 </body>
 </html>
