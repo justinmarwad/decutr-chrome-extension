@@ -1,5 +1,17 @@
 // Todo: Get location of where context menu was clicked: https://stackoverflow.com/questions/7703697/how-to-retrieve-the-element-where-a-contextmenu-has-been-executed
 
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+
+    if (request.pageUrl) url = request.pageUrl; else url="";
+    
+    data = cardEvidence(request.selectedText, url)
+
+    // sendResponse({ data: data })// Callback
+
+    // return true; 
+});
+
+
 chrome.browserAction.onClicked.addListener(function(tab) {
     chrome.tabs.sendRequest(tab.id, {method: "getSelection"}, function(response){
 
@@ -16,7 +28,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 chrome.runtime.onInstalled.addListener(function() {
   var id = chrome.contextMenus.create({"title": "Card Evidence", "contexts":["page", "link", "selection"], "id": "context"}); 
 });
- 
+  
 // add click event
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
     
@@ -27,35 +39,61 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
         url="";
     }
 
-    cardEvidence(info.selectionText, url);
+    data = cardEvidence(info.selectionText, url);
 });
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
-    if (request.pageUrl) url = request.pageUrl; else url="";
-
-    data = cardEvidence(request.selectedText, url);
-
-    // Callback
-    sendResponse({ data: data })
-
-    return true; 
-
-});
 
 
 // WORK  
 function cardEvidence(text, url) {
     paragraph_text = getParagraphText(text);
     
-    $.get("https://www.decutr.com/card/", {text: text, paragraph_text: paragraph_text, url: url, initials: userName=localStorage.getItem('initials')}, function(data){
-        copyFormattedTextToClipboard(data);
-        if (data) return data; else return false; 
+    chrome.storage.sync.get({
+		preset: "Decutr Original",
+		initials: "No initials set.",
+		citation: "",
+
+		citationsize: "10",
+		evidencesize: "12",
+		secondarysize: "8",
+		
+		italics: true,
+		publisher: true,
+		author: false,
+		date: true,
+
+		fonttype: "Times New Roman",
+
+	}, function(item) {
+        
+        
+        $.get("https://www.decutr.com/card/", {
+                text: text, paragraph_text: paragraph_text, url: url, 
+                preset: item.preset,
+                initials: item.initials,
+                citation: item.citation,
+        
+                citationsize: item.citationsize,
+                evidencesize: item.evidencesize,
+                secondarysize: item.secondarysize,
+                
+                italics: item.italics,
+                publisher: item.publisher,
+                author: item.author,
+                date: item.date,
+                
+                fonttype: item.fonttype,
+
+        }, function(data){
+            copyFormattedTextToClipboard(data);
+            if (data) return data; else return false; 
+        });
     });
 }
 
 // UTILS
-function getParagraphText(text) {
+function getParagraphText(text) {``
     if (window.getSelection) {
         selection = window.getSelection();
     } else if (document.selection) {
