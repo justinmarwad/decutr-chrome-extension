@@ -1,16 +1,18 @@
 
-//content script
-var clickedEl = null;
+// bind Ctrl-Alt-C to the copying evidence citation 
+Mousetrap.bind('ctrl+alt+c', function(e) {
+   
+    // there's selected text, set that to the selectedText 
+    if (window.getSelection) var selectedText = window.getSelection().toString();
+    else var selectedText = ""; // no selected text, only do citation 
 
-document.addEventListener("contextmenu", function(event){
-    clickedEl = event.target;
-}, true);
+    var url = window.location.href; 
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if(request == "getClickedEl") {
-        sendResponse({vwue: clickedEl.value});
-    }
+    chrome.runtime.sendMessage( {selectedText: selectedText, pageUrl: url}, function(response) {
+        alert(response.data);
+
+    });
+
+    return false;
 });
-
-
 

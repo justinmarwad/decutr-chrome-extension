@@ -1,4 +1,4 @@
-// Get location of where context menu was clicked: https://stackoverflow.com/questions/7703697/how-to-retrieve-the-element-where-a-contextmenu-has-been-executed
+// Todo: Get location of where context menu was clicked: https://stackoverflow.com/questions/7703697/how-to-retrieve-the-element-where-a-contextmenu-has-been-executed
 
 chrome.browserAction.onClicked.addListener(function(tab) {
     chrome.tabs.sendRequest(tab.id, {method: "getSelection"}, function(response){
@@ -14,16 +14,11 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 
 // Set up context menu at install time.
 chrome.runtime.onInstalled.addListener(function() {
-  var context = "selection";
-  var title = "Card Evidence";
-  var id = chrome.contextMenus.create({"title": title, "contexts":[context], "id": "context" + context}); 
+  var id = chrome.contextMenus.create({"title": "Card Evidence", "contexts":["page", "link", "selection"], "id": "context"}); 
 });
  
 // add click event
-chrome.contextMenus.onClicked.addListener(onClickHandler);
-
-// The onClicked callback function.
-function onClickHandler(info, tab) {
+chrome.contextMenus.onClicked.addListener(function (info, tab) {
     
     if (info.pageUrl) {
         url = info.pageUrl;
@@ -33,28 +28,30 @@ function onClickHandler(info, tab) {
     }
 
     cardEvidence(info.selectionText, url);
-};
+});
 
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
+    if (request.pageUrl) url = request.pageUrl; else url="";
 
+    data = cardEvidence(request.selectedText, url);
+
+    // Callback
+    sendResponse({ data: data })
+
+    return true; 
+
+});
 
 
 // WORK  
 function cardEvidence(text, url) {
-    if(text==''){
-        text="No text selected";
-        alert(text);
-    }
-
     paragraph_text = getParagraphText(text);
-
     
-
     $.get("https://www.decutr.com/card/", {text: text, paragraph_text: paragraph_text, url: url, initials: userName=localStorage.getItem('initials')}, function(data){
-        // copyTextToClipboard(data);
-        copyFormattedTextToClipboard(data); 
+        copyFormattedTextToClipboard(data);
+        if (data) return data; else return false; 
     });
-
 }
 
 // UTILS
@@ -75,21 +72,8 @@ function getParagraphText(text) {
     }
 }
 
-function copyTextToClipboard(text) {
-    var copyFrom = document.createElement("textarea"); 
-    copyFrom.textContent = text; 
-    document.body.appendChild(copyFrom); 
-    copyFrom.select(); 
-    
-    document.execCommand('copy');
-    
-    copyFrom.blur(); 
-    document.body.removeChild(copyFrom);
-
-}
 
 // This function expects an HTML string and copies it as rich text.
-
 function copyFormattedTextToClipboard (html) {
     // Create container for the HTML
     // [1]
@@ -135,15 +119,4 @@ function copyFormattedTextToClipboard (html) {
     // Remove the container
     // [6]
     document.body.removeChild(container)
-  }
-
-
-
-String.prototype.formatUnicorn = String.prototype.formatUnicorn || function () {"use strict";var str = this.toString();if (arguments.length) {var t = typeof arguments[0]; var key; var args = ("string" === t || "number" === t) ? Array.prototype.slice.call(arguments) : arguments[0]; for (key in args) {str = str.replace(new RegExp("\\{" + key + "\\}", "gi"), args[key]);}} return str;};
-
-
-// author_name + ()
-
-
-// SCHEMA
-// author, datePublished
+}

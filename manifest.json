@@ -1,31 +1,37 @@
 {
-   "version": "0.0.1",
-   "manifest_version": 2,
-   "name": "DeCutr",
-   "description": "Card a selected text of evidence automatically.",
-   "icons": {
+    "version": "0.0.1",
+    "manifest_version": 2,
+    "name": "DeCutr",
+    "description": "Card a selected text of evidence automatically.",
+    "icons": {
         "16": "icons/icon-16.png",
         "32": "icons/icon-32.png",
         "48": "icons/icon-48.png",
         "128": "icons/icon-128.png"
-   },
-   
-	"background": {
-        "scripts" : ["js/jquery-3.5.1.min.js", "js/background.js"],
+    },
+
+    "background": {
+        "scripts" : ["js/libraries/jquery-3.5.1.min.js", "js/background.js", "js/libraries/mousetrap.min.js"], // , "js/libraries/date.js", "js/libraries/cite.js"
         "persistent": true
     },
 
-   "browser_action": {
+    "content_scripts": [ {
+        "exclude_matches": [ "*://*.google.com/*" ],
+        "js": ["js/libraries/mousetrap.min.js", "js/content_script.js"],
+        "matches": [ "\u003Call_urls>" ]
+        } ],
+
+    "browser_action": {
         "default_icon": "icons/icon-32.png",
         "default_title": "Card Evidence"
-   },
+    },
 
-   "options_ui": {
+    "options_ui": {
         "page": "html/options.html",
         "open_in_tab": true
     },
 
-   "permissions": ["activeTab", "contextMenus", "storage", "https://www.decutr.com/*"]
+    "permissions": ["activeTab", "contextMenus", "storage", "https://www.decutr.com/*"]
 }
 
 
