@@ -19,18 +19,18 @@ function init_selects() {
 	var font_select = document.getElementById("fonttype");
 
 	// request the json font list 
-	fetch(chrome.runtime.getURL("data/font-families.json")).then( function (response) { 
-		return response.json() 
-	}).then( function (data) {  
+	// fetch(chrome.runtime.getURL("data/font-families.json")).then( function (response) { 
+	// 	return response.json() 
+	// }).then( function (data) {  
 
-		// loop through all the font names and add them one by one to the dropdown 
-		for (font of data["families"]) {
-			var option = document.createElement("option");  
-			option.text = option.value = font;
-			font_select.appendChild(option);
-		}
+	// 	// loop through all the font names and add them one by one to the dropdown 
+	// 	for (font of data["families"]) {
+	// 		var option = document.createElement("option");  
+	// 		option.text = option.value = font;
+	// 		font_select.appendChild(option);
+	// 	}
 
-	}); 
+	// }); 
 }
 
 function reset() {

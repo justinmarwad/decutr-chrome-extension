@@ -1,14 +1,19 @@
-// bind Ctrl-Alt-C to the copying evidence citation 
-Mousetrap.bind('ctrl+alt+c', function(e) {
-    // there's selected text, set that to the selectedText 
-    if (window.getSelection) var selectedText = window.getSelection().toString();
-    else var selectedText = ""; // no selected text, only do citation 
+// content_script.js - Runs in webpage context
 
-    var url = window.location.href; 
-
-    chrome.runtime.sendMessage( {selectedText: selectedText, pageUrl: url}, function(response) {
-        response_data = response.data;
-    });   
-
-    return false;
+// Listen for messages from background.js
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === "processSelection") {
+        copyToClipboard(message.data);
+        sendResponse({ success: true });
+    }
+    return true; // Keeps the message channel open for async responses
 });
+
+// Copies formatted content to clipboard
+async function copyToClipboard(htmlContent) {
+    try {
+        await navigator.clipboard.write([new ClipboardItem({'text/html': new Blob([htmlContent], { type: 'text/html' })})]);
+    } catch (err) {
+        console.error('Failed to copy HTML content: ', err);
+    }
+}

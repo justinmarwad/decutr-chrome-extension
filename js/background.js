@@ -1,160 +1,91 @@
-// Todo: Get location of where context menu was clicked: https://stackoverflow.com/questions/7703697/how-to-retrieve-the-element-where-a-contextmenu-has-been-executed
+// background.js - Service Worker for Manifest V3
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-
-    if (request.pageUrl) url = request.pageUrl; else url="";
-    
-    data = cardEvidence(request.selectedText, url)
-
-    // sendResponse({ data: data })// Callback
-
-    // return true; 
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.create({
+    id: "cardEvidence",
+    title: "Card Evidence",
+    contexts: ["selection"]
+  });
 });
 
-
-chrome.browserAction.onClicked.addListener(function(tab) {
-    chrome.tabs.sendRequest(tab.id, {method: "getSelection"}, function(response){
-
-      if (chrome.runtime.openOptionsPage) {
-        chrome.runtime.openOptionsPage();
-      } else {
-        window.open(chrome.runtime.getURL('options.html'));
-      }
-      
-    });
+// Open options page when the extension action button is clicked
+chrome.action.onClicked.addListener(() => {
+  chrome.runtime.openOptionsPage();
 });
 
-// Set up context menu at install time.
-chrome.runtime.onInstalled.addListener(function() {
-  var id = chrome.contextMenus.create({"title": "Card Evidence", "contexts":["page", "link", "selection"], "id": "context"}); 
-});
-  
-// add click event
-chrome.contextMenus.onClicked.addListener(function (info, tab) {
-    
-    if (info.pageUrl) {
-        url = info.pageUrl;
-    } else {
-        alert("Not a webpage, please pick a webpage.");
-        url="";
-    }
-
-    data = cardEvidence(info.selectionText, url);
-});
-
-
-
-
-// WORK  
-function cardEvidence(text, url) {
-    paragraph_text = getParagraphText(text);
-    
-    chrome.storage.sync.get({
-		preset: "Decutr Original",
-		initials: "No initials set.",
-		citation: "",
-
-		citationsize: "10",
-		evidencesize: "12",
-		secondarysize: "8",
-		
-		italics: true,
-		publisher: true,
-		author: false,
-		date: true,
-
-		fonttype: "Times New Roman",
-
-	}, function(item) {
-        
-        
-        $.get("https://www.decutr.com/card/", {
-                text: text, paragraph_text: paragraph_text, url: url, 
-                preset: item.preset,
-                initials: item.initials,
-                citation: item.citation,
-        
-                citationsize: item.citationsize,
-                evidencesize: item.evidencesize,
-                secondarysize: item.secondarysize,
-                
-                italics: item.italics,
-                publisher: item.publisher,
-                author: item.author,
-                date: item.date,
-                
-                fonttype: item.fonttype,
-
-        }, function(data){
-            copyFormattedTextToClipboard(data);
-            if (data) return data; else return false; 
+// Handle context menu click event
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === "cardEvidence" && info.selectionText && tab?.id) {
+    (async () => {   
+      try {
+        await chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          files: ["js/content_script.js"]
         });
-    });
-}
 
-// UTILS
-function getParagraphText(text) {``
-    if (window.getSelection) {
-        selection = window.getSelection();
-    } else if (document.selection) {
-        selection = document.selection.createRange();
-    }
-    var parent = selection.anchorNode;
-    while (parent != null && parent.localName != "P") {
-        parent = parent.parentNode;
-    }
-    if (parent == null) {
-        return "";
-    } else {
-        return parent.innerText || parent.textContent;
-    }
-}
+        const settings = await chrome.storage.sync.get({
+          preset: "Decutr Original",
+          initials: "No initials set.",
+          citation: "",
+          citationsize: "10",
+          evidencesize: "12",
+          secondarysize: "8",
+          italics: true,
+          publisher: true,
+          author: false,
+          date: true,
+          fonttype: "Times New Roman"
+        });
+        
+        const payload = {
+          url: info.pageUrl,
+          text: info.selectionText, 
+          selection_text: "",
+          preset: settings.preset,
+          initials: settings.initials,
+          citation: settings.citation,
+          citationsize: settings.citationsize,
+          evidencesize: settings.evidencesize,
+          secondarysize: settings.secondarysize,
+          italics: settings.italics ? "true" : "false",
+          publisher: settings.publisher ? "true" : "false",
+          author: settings.author ? "true" : "false",
+          date: settings.date ? "true" : "false",
+          fonttype: settings.fonttype
+        };
+        
+        // Encode the parameters correctly
+        const queryString = new URLSearchParams(payload).toString();
+        const requestUrl = `https://www.decutr.com/card/?${queryString}`;
+                
+        const response = await fetch(requestUrl, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" }
+        });
 
+        let data_json;
+        try {
+          const jsonResponse = await response.json();
+          data_json = jsonResponse.result;
+        } catch (error) {
+          console.error("Invalid JSON response:", error);
+          return chrome.tabs.sendMessage(tab.id, { success: false, error: "Invalid JSON response" });
+        }
 
-// This function expects an HTML string and copies it as rich text.
-function copyFormattedTextToClipboard (html) {
-    // Create container for the HTML
-    // [1]
-    var container = document.createElement('div')
-    container.innerHTML = html
-  
-    // Hide element
-    // [2]
-    container.style.position = 'fixed'
-    container.style.pointerEvents = 'none'
-    container.style.opacity = 0
-  
-    // Detect all style sheets of the page
-    var activeSheets = Array.prototype.slice.call(document.styleSheets)
-      .filter(function (sheet) {
-        return !sheet.disabled
-    })
-   
-    // Mount the container to the DOM to make `contentWindow` available
-    // [3]
-    document.body.appendChild(container)
-  
-    // Copy to clipboard
-    // [4]
-    window.getSelection().removeAllRanges()
-  
-    var range = document.createRange()
-    range.selectNode(container)
-    window.getSelection().addRange(range)
-  
-    // [5.1]
-    document.execCommand('copy')
-  
-    // [5.2]
-    for (var i = 0; i < activeSheets.length; i++) activeSheets[i].disabled = true
-  
-    // [5.3]
-    document.execCommand('copy')
-  
-    // [5.4]
-    for (var i = 0; i < activeSheets.length; i++) activeSheets[i].disabled = false
-  
-    // Remove the container
-    // [6]
-    document.body.removeChild(container)
-}
+        chrome.tabs.sendMessage(tab.id, {
+          action: "processSelection",
+          data: data_json,
+          success: true
+        });
+
+      } catch (error) {
+        console.error("Error processing selection:", error);
+        chrome.tabs.sendMessage(tab.id, {
+          action: "processSelection",
+          success: false,
+          error: error.message
+        });
+      }
+    })();
+  }
+});
